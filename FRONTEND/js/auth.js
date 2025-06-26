@@ -190,7 +190,7 @@ const auth = {
 };
 
 // Set your backend API base URL here for local development
-const API_BASE_URL = window.API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL = window.API_BASE_URL || 'https://smart-bus-pass.vercel.app/api';
 
 // Initialize authentication on page load
 document.addEventListener('DOMContentLoaded', function() {
