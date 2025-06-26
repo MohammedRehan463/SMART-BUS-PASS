@@ -486,14 +486,19 @@ const adminDashboard = {
         const idProofImg = document.getElementById('modal-id-proof');
         let idProofPath = appObj.idProof || (student && student.idProof);
         if (idProofImg && idProofPath) {
-            // Remove any leading slash for robustness
-            let src = idProofPath.replace(/^\/+/,'');
-            // Always ensure path starts with uploads/
-            if (!src.startsWith('uploads/')) {
-                src = 'uploads/' + src;
+            // If idProofPath is an object (GridFS), use filename or fileId
+            let src = '';
+            if (typeof idProofPath === 'object' && idProofPath !== null) {
+                // Prefer serving by filename, adjust if you serve by fileId
+                src = `${API_BASE_URL.replace(/\/api$/, '')}/api/file/${idProofPath.filename}`;
+            } else if (typeof idProofPath === 'string') {
+                // Fallback for legacy string paths
+                src = idProofPath.replace(/^\/+/,'');
+                if (!src.startsWith('uploads/')) {
+                    src = 'uploads/' + src;
+                }
+                src = `${API_BASE_URL.replace(/\/api$/, '')}/${src}`;
             }
-            // Always serve from backend root
-            src = `${API_BASE_URL.replace(/\/api$/, '')}/${src}`;
             idProofImg.src = src;
             idProofImg.alt = 'ID Proof';
             idProofImg.style.display = 'block';
