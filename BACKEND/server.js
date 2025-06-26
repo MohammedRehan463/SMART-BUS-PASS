@@ -84,5 +84,6 @@ mongoose.connect(process.env.MONGODB_URI, {
   });
 
 
-// For Vercel: export the app instead of listening, so all requests (including OPTIONS) go through Express middleware
+// For Vercel: export the app for both CommonJS and ES Module compatibility
 module.exports = app;
+exports.default = app;
