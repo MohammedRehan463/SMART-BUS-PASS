@@ -44,12 +44,10 @@ app.use('/api/otp', otpRoutes);
 
 // Root route
 app.get('/', (req, res) => {
-    res.json({ message: 'Welcome to Smart Bus Pass API' });
+    res.json({ message: 'Welcome to Smart Bus Pass' });
 });
 
-app.get('/', (req, res) => {
-    res.send({ message: 'Welcome to Smart Bus Pass' });
-});
+
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
