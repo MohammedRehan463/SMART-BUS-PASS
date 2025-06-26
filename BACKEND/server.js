@@ -15,17 +15,22 @@ const paymentRoutes = require('./routes/payment.routes');
 const otpRoutes = require('./routes/otp.routes');
 
 // Import User model
-const User = require('./models/User'); // Corrected path
+const User = require('./models/User');
 const bcrypt = require('bcryptjs');
 
 // Create Express app
 const app = express();
 
+// ✅ Custom CORS middleware (for Netlify frontend)
+app.use(cors({
+  origin: 'https://smart-bus-pass.netlify.app',
+  credentials: true // Only needed if you're using cookies or credentials
+}));
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('smart-bus-pass'))
+app.use(express.static('smart-bus-pass'));
 
 // Create uploads directory for storing files
 const uploadsDir = path.join(__dirname, 'uploads');
@@ -41,43 +46,26 @@ app.use('/api/student', studentRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/otp', otpRoutes);
 
-
 // Root route
 app.get('/', (req, res) => {
-    res.json({ message: 'Welcome to Smart Bus Pass' });
+  res.json({ message: 'Welcome to Smart Bus Pass' });
 });
-
-
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 })
-    .then(() => {
-        console.log('Connected to MongoDB');
-    })
-    .catch(err => {
-        console.error('Could not connect to MongoDB', err);
-        process.exit(1);
-    });
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch(err => {
+    console.error('Could not connect to MongoDB', err);
+    process.exit(1);
+  });
 
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
