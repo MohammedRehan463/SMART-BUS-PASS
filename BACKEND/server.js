@@ -21,11 +21,20 @@ const bcrypt = require('bcryptjs');
 // Create Express app
 const app = express();
 
-// ✅ Custom CORS middleware (for Netlify frontend)
+// ✅ Improved CORS middleware for Netlify frontend (handles preflight and all methods)
 app.use(cors({
-  origin: 'https://smart-bus-pass.netlify.app',
-  credentials: true // Only needed if you're using cookies or credentials
+  origin: [
+    'https://smart-bus-pass.netlify.app',
+    'http://localhost:5173', // for local dev (optional)
+    'http://localhost:3000'  // for local dev (optional)
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
+
+// Explicitly handle preflight requests for all routes
+app.options('*', cors());
 
 // Middleware
 app.use(express.json());
