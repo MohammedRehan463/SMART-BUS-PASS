@@ -83,8 +83,6 @@ mongoose.connect(process.env.MONGODB_URI, {
     process.exit(1);
   });
 
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+
+// For Vercel: export the app instead of listening, so all requests (including OPTIONS) go through Express middleware
+module.exports = app;
