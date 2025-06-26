@@ -24,8 +24,14 @@ const ApplicationSchema = new mongoose.Schema({
     required: true
   },
   idProof: {
-    type: String,
-    required: true
+    fileId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true
+    },
+    filename: {
+      type: String,
+      required: true
+    }
   },
   status: {
     type: String,

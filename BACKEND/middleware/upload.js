@@ -1,30 +1,12 @@
 const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const crypto = require('crypto');
 const path = require('path');
-const fs = require('fs');
-
-// Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-// Configure storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const fileExt = path.extname(file.originalname);
-    cb(null, file.fieldname + '-' + uniqueSuffix + fileExt);
-  }
-});
 
 // File filter
 const fileFilter = (req, file, cb) => {
   const allowedFileTypes = ['.jpg', '.jpeg', '.png', '.pdf'];
   const ext = path.extname(file.originalname).toLowerCase();
-  
   if (allowedFileTypes.includes(ext)) {
     cb(null, true);
   } else {
@@ -32,7 +14,21 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Create multer upload instance
+const mongoURI = process.env.MONGODB_URI;
+
+const storage = new GridFsStorage({
+  url: mongoURI,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) return reject(err);
+        const filename = buf.toString('hex') + path.extname(file.originalname);
+        resolve({ filename, bucketName: 'uploads' });
+      });
+    });
+  }
+});
+
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,

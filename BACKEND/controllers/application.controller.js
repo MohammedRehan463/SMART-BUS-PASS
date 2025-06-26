@@ -85,7 +85,11 @@ exports.createApplication = async (req, res) => {
     }
 
     const { applicationType, route, collegeId, duration } = req.body;
-    
+    // Store GridFS file id and filename
+    const idProof = {
+      fileId: req.file.id,
+      filename: req.file.filename
+    };
     // Create new application
     const application = new Application({
       student: req.user.id,
@@ -93,10 +97,9 @@ exports.createApplication = async (req, res) => {
       route,
       collegeId,
       duration,
-      idProof: `/uploads/${req.file.filename}`,
+      idProof,
       status: 'submitted'
     });
-
     await application.save();
 
     // Log the activity
