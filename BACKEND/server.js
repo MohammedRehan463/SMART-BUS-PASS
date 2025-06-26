@@ -21,20 +21,27 @@ const bcrypt = require('bcryptjs');
 // Create Express app
 const app = express();
 
-// ✅ Improved CORS middleware for Netlify frontend (handles preflight and all methods)
-app.use(cors({
-  origin: [
-    'https://smart-bus-pass.netlify.app',
-    'http://localhost:5173', // for local dev (optional)
-    'http://localhost:3000'  // for local dev (optional)
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
 
-// Explicitly handle preflight requests for all routes
-app.options('*', cors());
+// --- Robust CORS middleware for Vercel/Netlify cross-origin ---
+app.use((req, res, next) => {
+  const allowedOrigins = [
+    'https://smart-bus-pass.netlify.app',
+    'http://localhost:5173',
+    'http://localhost:3000'
+  ];
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  next();
+});
 
 // Middleware
 app.use(express.json());
