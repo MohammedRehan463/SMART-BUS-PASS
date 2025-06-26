@@ -13,6 +13,7 @@ const depotRoutes = require('./routes/depot.routes');
 const studentRoutes = require('./routes/student.routes');
 const paymentRoutes = require('./routes/payment.routes');
 const otpRoutes = require('./routes/otp.routes');
+const fileRoutes = require('./routes/file.routes');
 
 // Import User model
 const User = require('./models/User');
@@ -64,6 +65,7 @@ app.use('/api/depot', depotRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/otp', otpRoutes);
+app.use('/api/file', fileRoutes);
 
 // Root route
 app.get('/', (req, res) => {
