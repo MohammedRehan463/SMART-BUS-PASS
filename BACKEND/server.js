@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-require('dotenv').config();
 
 // Import routes
 const authRoutes = require('./routes/auth.routes');
@@ -21,7 +20,6 @@ const bcrypt = require('bcryptjs');
 // Create Express app
 const app = express();
 
-
 // --- Robust CORS middleware for Vercel/Netlify cross-origin ---
 app.use((req, res, next) => {
   const allowedOrigins = [
@@ -30,7 +28,6 @@ app.use((req, res, next) => {
     'http://localhost:3000'
   ];
   const origin = req.headers.origin;
-  // Always set Access-Control-Allow-Origin for allowed origins, else set to '*'
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   } else {
@@ -51,7 +48,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('smart-bus-pass'));
 
-// Create uploads directory for storing files
+// Serve uploaded files
 const uploadsDir = path.join(__dirname, 'uploads');
 app.use('/uploads', express.static(uploadsDir));
 
@@ -70,20 +67,21 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to Smart Bus Pass' });
 });
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
+// ✅ MongoDB connection using hardcoded URI
+const MONGO_URI = 'mongodb+srv://mohdrehanyahoo463:391gGeH921HMMkah@smartbuspass.y4usy8n.mongodb.net/smartbuspass?retryWrites=true&w=majority&appName=smartbuspass';
+
+mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
   .then(() => {
-    console.log('Connected to MongoDB');
+    console.log('✅ Connected to MongoDB Atlas');
   })
   .catch(err => {
-    console.error('Could not connect to MongoDB', err);
+    console.error('❌ MongoDB connection error:', err);
     process.exit(1);
   });
 
-
-// For Vercel: export the app for both CommonJS and ES Module compatibility
+// Vercel compatibility: no need to app.listen
 module.exports = app;
 exports.default = app;
