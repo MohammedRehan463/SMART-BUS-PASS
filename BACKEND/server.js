@@ -47,6 +47,10 @@ app.get('/', (req, res) => {
     res.json({ message: 'Welcome to Smart Bus Pass API' });
 });
 
+app.get('/', (req, res) => {
+    res.send({ message: 'Welcome to Smart Bus Pass' });
+});
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
